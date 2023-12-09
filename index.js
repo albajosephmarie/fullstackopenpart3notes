@@ -1,8 +1,8 @@
 // const http = require('http');
 const express = require("express");
+const app = express();
 const cors = require('cors')
 
-const app = express();
 
 const requestLogger = (request, response, next) => {
   console.log('Method:', request.method)
@@ -16,10 +16,11 @@ const unknownEndpont = (request, response) => {
   response.status(404).send({error: 'unknown endpoint'})
 }
 
-app.use(express.json())
-app.use(express.static('dist'))
-app.use(requestLogger)
 app.use(cors())
+app.use(express.json())
+app.use(requestLogger)
+app.use(express.static('build'))
+
 let notes = [
   {
     id: 1,
@@ -76,6 +77,7 @@ app.post('/api/notes', (request, response) => {
   const note = {
     content: body.content,
     important: body.important || false,
+    date: new Date(),
     id: generateId(),
   }
 
